@@ -37,26 +37,23 @@ void alta(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int b
     
     nuevo_nodo->mensaje = strdup(mensaje);
     nuevo_nodo->id = obtener_nuevo_primo(lista_primos_ptr, cant_primos_usados_ptr, cant_primos_totales_ptr);
-    nuevo_nodo->anterior = NULL;
+    nuevo_nodo->siguiente = NULL; 
 
     if (blockchains[blockchain_index] == NULL) {
+        nuevo_nodo->anterior = NULL;
         blockchains[blockchain_index] = nuevo_nodo;
     } else {
-        NodoBlockchain *actual = blockchains[blockchain_index];
-        while (actual->anterior != NULL) {
-            actual = actual->anterior;
-        }
-        actual->anterior = nuevo_nodo;
+        nuevo_nodo->anterior = blockchains[blockchain_index];
+        blockchains[blockchain_index]->siguiente = nuevo_nodo;
+        blockchains[blockchain_index] = nuevo_nodo;
     }
-    
-    actualizar_hoja_y_propagar(arbol_validacion, blockchain_index, nuevo_nodo->id);
-}
 
 void actualizar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, int id_nodo, const char *nuevo_mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr) {
     if (blockchains == NULL || blockchain_index < 0 || arbol_validacion == NULL) return;
 
     NodoBlockchain *actual = blockchains[blockchain_index];
     NodoBlockchain *nodo_a_modificar = NULL;
+    
     while (actual != NULL) {
         if (actual->id == id_nodo) {
             nodo_a_modificar = actual;
@@ -72,18 +69,14 @@ void actualizar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion,
 
     free(nodo_a_modificar->mensaje);
     nodo_a_modificar->mensaje = strdup(nuevo_mensaje);
-    
-    actual = nodo_a_modificar;
+        
+    nodo_a_modificar->id = obtener_nuevo_primo(lista_primos_ptr, cant_primos_usados_ptr, cant_primos_totales_ptr);
+
+    actual = nodo_a_modificar->siguiente;
     while(actual != NULL) {
         actual->id = obtener_nuevo_primo(lista_primos_ptr, cant_primos_usados_ptr, cant_primos_totales_ptr);
-        actual = actual->anterior;
+        actual = actual->siguiente;
     }
-    
-    NodoBlockchain *ultimo_nodo = blockchains[blockchain_index];
-    while(ultimo_nodo->anterior != NULL) {
-        ultimo_nodo = ultimo_nodo->anterior;
-    }
-    actualizar_hoja_y_propagar(arbol_validacion, blockchain_index, ultimo_nodo->id);
 }
 
 int validar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int num_blockchains) {
