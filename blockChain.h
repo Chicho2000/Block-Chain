@@ -9,7 +9,6 @@ typedef struct NodoBlockchain {
     struct NodoBlockchain *anterior;
 } NodoBlockchain;
 
-void actualizar_hoja_y_propagar(ArbolValidacion *arbol, int indice_hoja, long long nuevo_valor);
 int *crear_cache_primos(int *cant_totales)
 int obtener_nuevo_primo(int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr);
 void alta(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, const char *mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr);
@@ -19,4 +18,5 @@ int validar_subconjunto(NodoBlockchain **blockchains, int num_blockchains, long 
 void destruir_blockchain_y_primos(NodoBlockchain **blockchains, int num_blockchains, int *lista_primos);
 
 #endif
+
 
