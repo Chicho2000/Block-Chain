@@ -22,3 +22,4 @@ void destruir_blockchain_y_primos(NodoBlockchain **blockchains, int num_blockcha
 
 #endif
 
+
