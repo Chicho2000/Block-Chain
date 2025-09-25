@@ -2,6 +2,7 @@
 #define BLOCKCHAIN_H
 
 #include "generador_primos.h"
+#include "arbolValidacion.h"
 
 typedef struct NodoBlockchain {
     int id;
@@ -9,7 +10,8 @@ typedef struct NodoBlockchain {
     struct NodoBlockchain *anterior;
 } NodoBlockchain;
 
-int *crear_cache_primos(int *cant_totales)
+NodoBlockchain **crear_blockchains(int num_blockchains);
+int *crear_primos(int *cant_totales)
 int obtener_nuevo_primo(int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr);
 void alta(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, const char *mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr);
 void actualizar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, int id_nodo, const char *nuevo_mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr);
@@ -18,5 +20,3 @@ int validar_subconjunto(NodoBlockchain **blockchains, int num_blockchains, long 
 void destruir_blockchain_y_primos(NodoBlockchain **blockchains, int num_blockchains, int *lista_primos);
 
 #endif
-
-
