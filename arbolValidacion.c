@@ -2,9 +2,17 @@
 #include <math.h>
 #include "arbolValidacion.h"
 
-static int get_parent(int i) { return (i - 1) / 2; }
-static int get_left_child(int i) { return 2 * i + 1; }
-static int get_right_child(int i) { return 2 * i + 2; }
+static int get_parent(int i){
+     return (i - 1) / 2; 
+}
+
+static int get_left_child(int i) { 
+    return 2 * i + 1; 
+}
+
+static int get_right_child(int i) { 
+    return 2 * i + 2; 
+}
 
 ArbolValidacion *crear_arbol_validacion(int num_hojas) {
     ArbolValidacion *arbol = (ArbolValidacion *)malloc(sizeof(ArbolValidacion));
