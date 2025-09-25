@@ -8,6 +8,7 @@ typedef struct NodoBlockchain {
     int id;
     char *mensaje;
     struct NodoBlockchain *anterior;
+    struct NodoBlockchain *siguiente;
 } NodoBlockchain;
 
 NodoBlockchain **crear_blockchains(int num_blockchains);
@@ -20,3 +21,4 @@ int validar_subconjunto(NodoBlockchain **blockchains, int num_blockchains, long 
 void destruir_blockchain_y_primos(NodoBlockchain **blockchains, int num_blockchains, int *lista_primos);
 
 #endif
+
