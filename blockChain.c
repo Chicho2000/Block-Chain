@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "blockchain.h"
+#include "blockChain.h"
 #include "generador_primos.h"
 #include "arbolValidacion.h"
 
@@ -51,8 +51,11 @@ void alta(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int b
     actualizar_hoja_y_propagar(arbol_validacion, blockchain_index, nuevo_nodo->id);
 }
 
-void actualizar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, int id_nodo, const char *nuevo_mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr) {
-    if (blockchains == NULL || blockchain_index < 0 || arbol_validacion == NULL) return;
+void actualizar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, int cant_blockchains, int id_nodo, const char *nuevo_mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr) {
+    if (blockchains == NULL || blockchain_index < 0 || blockchain_index >= cant_blockchains || arbol_validacion == NULL) {
+        printf("ERROR\n");
+        return;
+    }
 
     NodoBlockchain *actual = blockchains[blockchain_index];
     NodoBlockchain *nodo_a_modificar = NULL;

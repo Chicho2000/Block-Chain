@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "blockchain.h"
+#include <math.h>
+#include "blockChain.h"
 #include "arbolValidacion.h"
 
 #define CANT_BLOCKCHAINS 3
@@ -28,10 +29,24 @@ void imprimir_blockchain(NodoBlockchain* head, int index) {
 }
 
 void imprimir_arbol(ArbolValidacion* arbol) {
-    if (arbol != NULL && arbol->heap != NULL) {
-        printf("Raiz del arbol de validacion: %lld\n", arbol->heap[0]);
-    } else {
-        printf("Arbol de validacion no inicializado.\n");
+    if (arbol == NULL || arbol->heap == NULL) {
+        printf("Árbol de validación no inicializado o vacío.\n");
+        return;
+    }
+
+    printf("Árbol de validación (estructura de heap):\n");
+
+    int nivel = 0;
+    int elementos_en_nivel = 1;
+    int i = 0;
+
+    while (i < arbol->capacidad) {
+        for (int j = 0; j < elementos_en_nivel && i < arbol->capacidad; j++, i++) {
+            printf("%lld ", arbol->heap[i]);
+        }
+        printf("\n");
+        nivel++;
+        elementos_en_nivel *= 2;
     }
 }
 
@@ -42,6 +57,7 @@ int main() {
 
     NodoBlockchain **blockchains = crear_blockchains(CANT_BLOCKCHAINS);
     ArbolValidacion *arbol = crear_arbol_validacion(CANT_BLOCKCHAINS);
+    ArbolValidacion *arbolFalso = crear_arbol_validacion(CANT_BLOCKCHAINS);
 
     if (blockchains == NULL || arbol == NULL) {
         printf("Error al inicializar las estructuras.\n");
@@ -66,7 +82,16 @@ int main() {
     imprimir_arbol(arbol);
 
     printf("\nValidacion Inicial\n");
+    imprimir_arbol(arbol);
     if (validar(blockchains, arbol, CANT_BLOCKCHAINS)) {
+        printf("Validacion: Correcta\n");
+    } else {
+        printf("Validacion: Incorrecta\n");
+    }
+    
+    printf("\nValidacion con otro arbol incorrecto\n");
+    imprimir_arbol(arbolFalso);
+    if (validar(blockchains, arbolFalso, CANT_BLOCKCHAINS)) {
         printf("Validacion: Correcta\n");
     } else {
         printf("Validacion: Incorrecta\n");
@@ -76,8 +101,25 @@ int main() {
 
     printf("\nOperacion de Actualizacion\n");
     printf("Modificando nodo con ID %d en la blockchain 0\n", id_a_modificar);
-    actualizar(blockchains, arbol, 0, id_a_modificar, "Nuevo Mensaje", &lista_primos, &cant_primos_usados, &cant_primos_totales);
+    actualizar(blockchains, arbol, 0, CANT_BLOCKCHAINS, id_a_modificar, "Nuevo Mensaje", &lista_primos, &cant_primos_usados, &cant_primos_totales);
+      
+    imprimir_blockchain(blockchains[0], 0);
+    imprimir_blockchain(blockchains[1], 1);
+    imprimir_blockchain(blockchains[2], 2);
+    imprimir_arbol(arbol);
+    
+    int id_falso = 4000;
+    printf("\nModificando nodo con ID %d en la blockchain 0\n", id_falso);
+    actualizar(blockchains, arbol, 0, CANT_BLOCKCHAINS, id_falso, "Nuevo Mensaje", &lista_primos, &cant_primos_usados, &cant_primos_totales);
   
+    imprimir_blockchain(blockchains[0], 0);
+    imprimir_blockchain(blockchains[1], 1);
+    imprimir_blockchain(blockchains[2], 2);
+    imprimir_arbol(arbol);
+    
+    printf("\nModificando nodo con ID %d en la blockchain 5\n", id_a_modificar);
+    actualizar(blockchains, arbol, 5, CANT_BLOCKCHAINS, id_a_modificar, "Nuevo Mensaje", &lista_primos, &cant_primos_usados, &cant_primos_totales);
+      
     imprimir_blockchain(blockchains[0], 0);
     imprimir_blockchain(blockchains[1], 1);
     imprimir_blockchain(blockchains[2], 2);
@@ -85,6 +127,13 @@ int main() {
 
     printf("\nValidacion despues de la post-actualizacion\n");
     if (validar(blockchains, arbol, CANT_BLOCKCHAINS)) {
+        printf("Validacion: Correcta\n");
+    } else {
+        printf("Validacion: Incorrecta\n");
+    }
+    
+    printf("\nValidacion despues de la post-actualizacion con arbol incorrecto\n");
+    if (validar(blockchains, arbolFalso, CANT_BLOCKCHAINS)) {
         printf("Validacion: Correcta\n");
     } else {
         printf("Validacion: Incorrecta\n");
@@ -101,6 +150,23 @@ int main() {
     } else {
         printf("Validacion de subconjunto: Incorrecta\n");
     }
+    
+    valor_esperado = blockchains[1]->id * blockchains[2]->id;
+    printf("Validando subconjunto {1, 2}. Valor esperado: %lld\n", valor_esperado);
+    if (validar_subconjunto(blockchains, CANT_BLOCKCHAINS, valor_esperado, 1, 2)) {
+        printf("Validacion de subconjunto: Correcta\n");
+    } else {
+        printf("Validacion de subconjunto: Incorrecta\n");
+    }
+
+    valor_esperado = 0;
+    printf("Validando subconjunto {1, 2}. Valor esperado: %lld\n", valor_esperado);
+    if (validar_subconjunto(blockchains, CANT_BLOCKCHAINS, valor_esperado, 1, 2)) {
+        printf("Validacion de subconjunto: Correcta\n");
+    } else {
+        printf("Validacion de subconjunto: Incorrecta\n");
+    }
+    
     
     destruir_blockchain_y_primos(blockchains, CANT_BLOCKCHAINS, lista_primos);
     destruir_arbol_validacion(arbol);
