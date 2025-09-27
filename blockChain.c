@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "blockchain.h"
+#include "blockChain.h"
 #include "generador_primos.h"
 #include "arbolValidacion.h"
 
@@ -29,8 +29,8 @@ static int obtener_nuevo_primo(int **lista_primos_ptr, int *cant_primos_usados_p
     return (*lista_primos_ptr)[(*cant_primos_usados_ptr)++];
 }
 
-void alta(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, const char *mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr) {
-    if (blockchains == NULL || blockchain_index < 0 || arbol_validacion == NULL) return;
+void alta(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index,int cant_blockchains, const char *mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr) {
+    if (blockchains == NULL || blockchain_index < 0 || arbol_validacion == NULL || blockchain_index >= cant_blockchains) return;
 
     NodoBlockchain *nuevo_nodo = (NodoBlockchain *)malloc(sizeof(NodoBlockchain));
     if (nuevo_nodo == NULL) return;
@@ -51,8 +51,16 @@ void alta(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int b
     actualizar_hoja_y_propagar(arbol_validacion, blockchain_index, nuevo_nodo->id);
 }
 
-void actualizar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, int id_nodo, const char *nuevo_mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr) {
-    if (blockchains == NULL || blockchain_index < 0 || arbol_validacion == NULL) return;
+void actualizar(NodoBlockchain **blockchains, ArbolValidacion *arbol_validacion, int blockchain_index, int cant_blockchains, int id_nodo, const char *nuevo_mensaje, int **lista_primos_ptr, int *cant_primos_usados_ptr, int *cant_primos_totales_ptr) {
+    if (blockchains == NULL || arbol_validacion == NULL) {
+        printf("Error: La lista de blockchains o el arbol de validacion son nulls\n");
+        return;
+    }
+
+    if (blockchain_index < 0 || blockchain_index >= cant_blockchains) {
+        printf("Error: La blockchain %d esta fuera del rango permitido [0;%d]\n", blockchain_index, (cant_blockchains-1));
+        return;
+    }
 
     NodoBlockchain *actual = blockchains[blockchain_index];
     NodoBlockchain *nodo_a_modificar = NULL;
